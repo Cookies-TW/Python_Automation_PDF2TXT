@@ -9,7 +9,7 @@ from io import StringIO
 NUMBER = 0
 
 # File Location
-file = r'/Users/PETERHAO/Desktop/ga-I572469.pdf'
+file = r'/Users/PETERHAO/Desktop/ga-I572441.pdf'
 
 # Your output TXT name 
 Output_Name="/Users/PETERHAO/Desktop/M0.txt"
@@ -29,12 +29,22 @@ def convert_pdf(path, page=1):
     fp.close()
     device.close()
 
-    article = retstr.getvalue().encode('big5')
+    article = retstr.getvalue()
     retstr.close()
     print(article)
     fptr = open(Output_Name,'w',encoding = 'utf8')
     fptr.write(article)
     fptr.close()
+
+def more_clear(line):
+    if line[0] is '(':
+        return False
+    elif line[0] is '-' and line[1] is ' ':
+        return False
+    elif line[0] is '\n':
+        return False
+    else:
+        return True
 
 def text_exeraction():
     locker = False
@@ -42,13 +52,20 @@ def text_exeraction():
     ftpr = open(Output_Name,encoding = 'UTF-8')
     p = open(Patent_Name,'w',encoding = 'utf8')
     line = ftpr.readline()
-    while line:
 
+    # 擷取專利範圍
+    while line:
+        if line.find("圖式簡單說明") is not -1:
+            break
 
         if locker is True:
-            p.writelines(line)
-        line = ftpr.readline()
+            if more_clear(line) is True:
+                p.writelines(line)
+        if line.find("[57]申請專利範圍") is not -1:
+            locker = True
 
+        line = ftpr.readline()
+    # 刪減
     ftpr.close()
     p.close()
 
