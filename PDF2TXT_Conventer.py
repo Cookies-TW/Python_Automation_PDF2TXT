@@ -24,24 +24,25 @@ def convert_pdf(path, page=1):
     device = TextConverter(rsrcmgr, retstr, pageno=page, laparams=laparams)
 
     fp = open(path, 'rb')
-    print(fp.readline())
+    #print(fp.readline())
     process_pdf(rsrcmgr, device, fp)
     fp.close()
     device.close()
 
     article = retstr.getvalue()
     retstr.close()
-    print(article)
+    #print(article)
     fptr = open(Output_Name,'w',encoding = 'utf8')
     fptr.write(article)
     fptr.close()
 
 def more_clear(line):
-    if line[0] is '(':
+    """刪去頁碼與標號"""
+    if line[0] is '(' or line[1] is '(': #  (2)
         return False
-    elif line[0] is '-' and line[1] is ' ':
+    elif line[0] is '-' and line[1] is ' ': # pages
         return False
-    elif line[0] is '\n':
+    elif line[0] is '\n': # 空行
         return False
     else:
         return True
@@ -65,7 +66,7 @@ def text_exeraction():
             locker = True
 
         line = ftpr.readline()
-    # 刪減
+    
     ftpr.close()
     p.close()
 
@@ -78,5 +79,6 @@ def text_exeraction():
             
 convert_pdf(file)
 text_exeraction()
+print("Successful.")
 
 
